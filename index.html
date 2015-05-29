@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+	<head>
+        <link rel="stylesheet" type="text/css" href="styleSheet.css">
+    </head>
+    <body>
+    	<script type="text/javascript" src="headTracker.js"></script>
+        <canvas id="inputCanvas" width="320" height="240" style="display:none"></canvas>
+       <video id="inputVideo" autoplay loop></video>  
+       <script>
+       var videoInput = document.getElementById('inputVideo');
+		var canvasInput = document.getElementById('inputCanvas');
+		var htracker = new headtrackr.Tracker();
+		htracker.init(videoInput, canvasInput);
+		htracker.start();
+		
+		var context = new AudioContext ();
+		var oscillator = context.createOscillator();
+		oscillator.connect(context.destination);
+		oscillator.start();
+		
+		gainNode = context.createGain();
+		oscillator.connect(gainNode);
+		gainNode.connect(context.destination);
+		
+		document.addEventListener('headtrackingEvent', function(event){
+		     if(event.x > 0){
+             console.log('right');
+             gainNode.gain.value += 5;
+             console.log('rightgain ' + gainNode.gain.value);
+         }
+           else if(event.x < 0){
+              gainNode.gain.value -= 5;
+              console.log('leftgain '+ gainNode.gain.value);
+              console.log('left');
+          }
+        });
+		</script>  
+    </body>
+</html>
